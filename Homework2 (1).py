@@ -1,0 +1,52 @@
+#Homework2
+#Tarik Dahnoun
+
+import numpy as np
+import pylab
+
+def dV(v,t):
+    return -B*v-g
+
+def RK2(V_initial, tmin, tmax, nts, deriv): 
+       
+    # Set up time axis    
+    t = np.linspace(tmin, tmax, nts)
+    dt = t[1]-t[0]
+    
+    # Set up velocity and position arrays
+    v = np.zeros_like(t)
+    vh = np.zeros_like(t)
+    
+    # Set up initial conditions
+    v[0] = V_initial
+    
+    # Do the Euler solve
+    for it in np.arange(0,len(t)-1):
+        vh[it] = v[it] + 0.5*dt*deriv(v[it],t[it])
+        v[it+1] = v[it] + dt * deriv(vh[it],t[it])
+        
+    # Make a plot
+    pylab.plot(t,v,'.-',label=r"RK2, $\beta$="+"{}".format(B))
+    return t, v
+    
+g=9.8
+B=.5
+Vinitial = 100.0 # initial Velocity
+tinitial = 0.0 # initial time
+tfinal = 10.0 # final time
+nts = 20 # number of timesteps
+
+t,RK2 = RK2(Vinitial, tinitial, tfinal, nts, dV)
+print RK2
+
+# plot_analytic()
+pylab.xlabel("Time [s]",fontsize=16)
+pylab.ylabel("Velocity [m/s]",fontsize=16)
+pylab.axhline(0,color='k',ls='--')
+pylab.xlim(left=0)
+pylab.title("Velocity with drag")
+pylab.show()
+
+pylab.legend(loc='lower left',fontsize=11)
+
+# pylab.savefig("/Users/kemper/Desktop/PY251/_Lesson 5 - ODEs/Euler_solution_drag.pdf")
